@@ -1,4 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { Observable, of } from 'rxjs';
+import { map, switchMap, tap } from 'rxjs/operators';
+import { BlogEntry } from 'src/app/shared/models/blog-entry.model';
+import { HomeHttpService } from '../services/home-http.service';
 
 @Component({
   selector: 'app-home',
@@ -7,10 +11,15 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HomeComponent implements OnInit {
 
-  constructor() { }
+  entries$: Observable<BlogEntry[]> | undefined;
+
+  constructor(private homeHttpService: HomeHttpService) { }
 
   ngOnInit() {
-    console.log('home')
+    this.entries$ = this.homeHttpService.getBlogEnties().pipe(
+      tap(data => console.log(data)),
+
+    );
   }
 
 }
