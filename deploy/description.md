@@ -1,0 +1,1 @@
+A place for Azure ARM Templates
