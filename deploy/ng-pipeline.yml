@@ -7,7 +7,7 @@ variables:
 - name: ProjectName
   value: blog-ng-client
 - name: ProjectFolder
-  value: 'source/${ProjectName}'
+  value: 'source/$(ProjectName)'
 
 stages:
 - stage: Build
@@ -26,17 +26,17 @@ stages:
         npm install -g @angular/cli
         npm install
       displayName: 'Install packages'
-      workingDirectory: '${ProjectFolder}'
+      workingDirectory: '$(ProjectFolder)'
 
     - script: |
         ng lint
       displayName: 'Run linter'
-      workingDirectory: '${ProjectFolder}'
+      workingDirectory: '$(ProjectFolder)'
 
     - script: |
         npm run test-headless
       displayName: 'Run tests'
-      workingDirectory: '${ProjectFolder}'
+      workingDirectory: '$(ProjectFolder)'
 
     - task: PublishTestResults@2
       condition: succeededOrFailed()
@@ -48,11 +48,11 @@ stages:
     - script: |
         ng build --prod
       displayName: 'Build for prod'
-      workingDirectory: '${ProjectFolder}'
+      workingDirectory: '$(ProjectFolder)'
 
     - task: ArchiveFiles@2
       inputs:        
-        rootFolderOrFile: '${ProjectFolder}/dist/${ProjectName}'
+        rootFolderOrFile: '$(ProjectFolder)/dist/$(ProjectName)'
         includeRootFolder: true
         archiveType: 'zip'
         archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
@@ -61,5 +61,5 @@ stages:
     - task: PublishBuildArtifacts@1
       inputs:
         PathtoPublish: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
-        ArtifactName: '${ProjectName}'
+        ArtifactName: '$(ProjectName)'
         publishLocation: 'Container'
