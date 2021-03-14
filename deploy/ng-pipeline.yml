@@ -5,9 +5,9 @@
 
 variables:
 - name: projectName
-  value: blog-ng-client
+  value: ClientApp
 - name: projectPath
-  value: 'source/$(projectName)'
+  value: 'source/WebUI/$(projectName)'
 
 stages:
 - stage: Build
