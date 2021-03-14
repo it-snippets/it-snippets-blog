@@ -5,7 +5,7 @@
 
 variables:
 - name: projectName
-  value: ClientApp
+  value: BlogClientApp
 - name: projectPath
   value: 'source/WebUI/$(projectName)'
 
