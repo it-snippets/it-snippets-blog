@@ -27,7 +27,7 @@ steps:
   workingDirectory: source/blog-ng-client
 
 - script: |
-    ng test --watch=false
+    npm run test-headless
   displayName: 'ng test'
   workingDirectory: source/blog-ng-client
 
