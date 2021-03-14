@@ -85,10 +85,16 @@ stages:
       runOnce:
         deploy:
           steps:
-          
+          - task: CopyFiles@2
+            inputs:
+              SourceFolder: '$(System.WorkFolder)'
+              Contents: '**/*.zip'
+              TargetFolder: '$(System.WorkFolder)/$(projectName)'
+              CleanTargetFolder: true
+              OverWrite: true
           - task: ExtractFiles@1
             inputs:
-              archiveFilePatterns: '$(System.WorkFolder)/**/*.zip'
+              archiveFilePatterns: '$(System.WorkFolder)/$(projectName)/**/*.zip'
               destinationFolder: '$(System.WorkFolder)'
               cleanDestinationFolder: false
               overwriteExistingFiles: true
@@ -110,4 +116,4 @@ stages:
               azureSubscription: 'az-infinitum-connection'
               appType: 'webAppLinux'
               WebAppName: 'it-snippets'
-              packageForLinux: '$(System.WorkFolder)/**/*.zip'
+              packageForLinux: '$(System.WorkFolder)/$(projectName)/**/*.zip'
