@@ -80,7 +80,7 @@ stages:
   - deployment: DeploymentJob
     pool:
       vmImage: 'ubuntu-20.04'
-    environment: $(environmentName)
+    environment: 'DEV'
     strategy:
       runOnce:
         deploy:
