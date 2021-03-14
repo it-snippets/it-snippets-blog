@@ -66,25 +66,32 @@ stages:
         ArtifactName: '$(projectName)'
         publishLocation: 'Container'
 
-# TODO: deploy
-# - stage: Deploy
-#   displayName: 'Deploy '
-#   dependsOn: Build
-#   condition: succeeded()
-#   jobs:
-#   - deployment: DeploymentJob
-#     pool:
-#       vmImage: 'ubuntu-20.04'
-#     environment: $(environmentName)
-#     strategy:
-#       runOnce:
-#         deploy:
-#           steps:
+- stage: Deploy
+  displayName: 'Deploy '
+  dependsOn: Build
+  condition: succeeded()
+  jobs:
+  - deployment: DeploymentJob
+    pool:
+      vmImage: 'ubuntu-20.04'
+    environment: $(environmentName)
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - task: DownloadBuildArtifacts@0
+            displayName: 'Download artifact'
+            inputs:
+              buildType: 'current'
+              downloadType: 'single'
+              artifactName: '$(projectName)'
+              downloadPath: '$(System.ArtifactsDirectory)'
+          
+          - task: ExtractFiles@1
+            inputs:
+              archiveFilePatterns: '**/*.zip'
+              destinationFolder: '$(System.ArtifactsDirectory)/extracted'
+              cleanDestinationFolder: true
+              overwriteExistingFiles: true
 
-#           - task: AzureWebApp@1
-#             displayName: 'Deploy Azure Web App : $(angularProjectName)'
-#             inputs:
-#               azureSubscription: $(azureSubscription)
-#               appName: $(angularProjectName)
-#               appType: webAppLinux
-#               package: $(Pipeline.Workspace)/$(angularProjectName)/$(Build.BuildId).zip 
+         
