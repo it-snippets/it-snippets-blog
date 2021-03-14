@@ -18,6 +18,15 @@ steps:
 - script: |
     npm install -g @angular/cli
     npm install
-    ng build --prod
   displayName: 'npm install and build'
+  workingDirectory: source/blog-ng-client
+
+- script: |
+    ng lint
+  displayName: 'ng lint'
+  workingDirectory: source/blog-ng-client
+
+- script: |
+    ng build --prod
+  displayName: 'ng build'
   workingDirectory: source/blog-ng-client
