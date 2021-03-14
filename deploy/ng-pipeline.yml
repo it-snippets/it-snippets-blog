@@ -4,16 +4,16 @@
 # https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
 
 variables:
-- name: ProjectName
+- name: projectName
   value: blog-ng-client
-- name: ProjectFolder
-  value: 'source/$(ProjectName)'
+- name: projectPath
+  value: 'source/$(projectName)'
 
 stages:
 - stage: Build
   displayName: Build stage
   jobs:
-  - job: BuildJob
+  - job: Build
     pool:
       vmImage: 'ubuntu-20.04'
     steps:
@@ -26,17 +26,17 @@ stages:
         npm install -g @angular/cli
         npm install
       displayName: 'Install packages'
-      workingDirectory: '$(ProjectFolder)'
+      workingDirectory: '$(projectPath)'
 
     - script: |
         ng lint
       displayName: 'Run linter'
-      workingDirectory: '$(ProjectFolder)'
+      workingDirectory: '$(projectPath)'
 
     - script: |
         npm run test-headless
       displayName: 'Run tests'
-      workingDirectory: '$(ProjectFolder)'
+      workingDirectory: '$(projectPath)'
 
     - task: PublishTestResults@2
       condition: succeededOrFailed()
@@ -48,11 +48,11 @@ stages:
     - script: |
         ng build --prod
       displayName: 'Build for prod'
-      workingDirectory: '$(ProjectFolder)'
+      workingDirectory: '$(projectPath)'
 
     - task: ArchiveFiles@2
       inputs:        
-        rootFolderOrFile: '$(ProjectFolder)/dist/$(ProjectName)'
+        rootFolderOrFile: '$(projectPath)/dist/$(projectName)'
         includeRootFolder: true
         archiveType: 'zip'
         archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
@@ -61,5 +61,28 @@ stages:
     - task: PublishBuildArtifacts@1
       inputs:
         PathtoPublish: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
-        ArtifactName: '$(ProjectName)'
+        ArtifactName: '$(projectName)'
         publishLocation: 'Container'
+
+# TODO: deploy
+# - stage: Deploy
+#   displayName: 'Deploy '
+#   dependsOn: Build
+#   condition: succeeded()
+#   jobs:
+#   - deployment: DeploymentJob
+#     pool:
+#       vmImage: 'ubuntu-20.04'
+#     environment: $(environmentName)
+#     strategy:
+#       runOnce:
+#         deploy:
+#           steps:
+
+#           - task: AzureWebApp@1
+#             displayName: 'Deploy Azure Web App : $(projectName)'
+#             inputs:
+#               azureSubscription: $(azureSubscription)
+#               appName: $(projectName)
+#               appType: webAppLinux
+#               package: $(Pipeline.Workspace)/$(projectName)/$(Build.BuildId).zip 
