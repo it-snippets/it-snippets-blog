@@ -4,10 +4,12 @@
 # https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
 
 variables:
+- name: angularProjectName
+  value: blog-ng-client
 - name: projectName
-  value: BlogClientApp
+  value: blog-ng-client
 - name: projectPath
-  value: 'source/WebUI/$(projectName)'
+  value: 'source/WebUI/BlogClientApp'
 
 stages:
 - stage: Build
@@ -52,7 +54,7 @@ stages:
 
     - task: ArchiveFiles@2
       inputs:        
-        rootFolderOrFile: '$(projectPath)/dist/$(projectName)'
+        rootFolderOrFile: '$(projectPath)/dist/$(angularProjectName)'
         includeRootFolder: true
         archiveType: 'zip'
         archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
@@ -80,9 +82,9 @@ stages:
 #           steps:
 
 #           - task: AzureWebApp@1
-#             displayName: 'Deploy Azure Web App : $(projectName)'
+#             displayName: 'Deploy Azure Web App : $(angularProjectName)'
 #             inputs:
 #               azureSubscription: $(azureSubscription)
-#               appName: $(projectName)
+#               appName: $(angularProjectName)
 #               appType: webAppLinux
-#               package: $(Pipeline.Workspace)/$(projectName)/$(Build.BuildId).zip 
+#               package: $(Pipeline.Workspace)/$(angularProjectName)/$(Build.BuildId).zip 
