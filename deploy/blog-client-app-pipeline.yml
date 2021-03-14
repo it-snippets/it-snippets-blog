@@ -101,8 +101,8 @@ stages:
               resourceGroupName: 'it-snippets-DEV'
               location: 'West Europe'
               templateLocation: 'Linked artifact'
-              csmFile: '$(angularProjectName)/blog-client-app-template.json'
-              csmParametersFile: '$(angularProjectName)blog-client-app-parameters.json'
+              csmFile: '$(System.WorkFolder)/$(angularProjectName)/blog-client-app-template.json'
+              csmParametersFile: '$(System.WorkFolder)/$(angularProjectName)/blog-client-app-parameters.json'
               deploymentMode: 'Incremental'
 
          
