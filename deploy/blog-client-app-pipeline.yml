@@ -79,19 +79,31 @@ stages:
       runOnce:
         deploy:
           steps:
-          - task: DownloadBuildArtifacts@0
-            displayName: 'Download artifact'
-            inputs:
-              buildType: 'current'
-              downloadType: 'single'
-              artifactName: '$(projectName)'
-              downloadPath: '$(System.ArtifactsDirectory)'
+          # - task: DownloadBuildArtifacts@0
+          #   displayName: 'Download artifact'
+          #   inputs:
+          #     buildType: 'current'
+          #     downloadType: 'single'
+          #     artifactName: '$(projectName)'
+          #     downloadPath: '$(System.ArtifactsDirectory)'
           
-          - task: ExtractFiles@1
+          # - task: ExtractFiles@1
+          #   inputs:
+          #     archiveFilePatterns: '$(System.ArtifactsDirectory)/*.zip'
+          #     destinationFolder: '$(System.ArtifactsDirectory)/extracted'
+          #     cleanDestinationFolder: true
+          #     overwriteExistingFiles: true
+          - task: AzureResourceManagerTemplateDeployment@3
             inputs:
-              archiveFilePatterns: '$(System.ArtifactsDirectory)/*.zip'
-              destinationFolder: '$(System.ArtifactsDirectory)/extracted'
-              cleanDestinationFolder: true
-              overwriteExistingFiles: true
+              deploymentScope: 'Resource Group'
+              azureResourceManagerConnection: 'az-infinitum-connection'
+              subscriptionId: '1bc29c05-0f12-4f80-84f1-9fd4f924c9cf'
+              action: 'Create Or Update Resource Group'
+              resourceGroupName: 'it-snippets-DEV'
+              location: 'West Europe'
+              templateLocation: 'Linked artifact'
+              csmFile: 'blog-client-app-template.json'
+              csmParametersFile: 'blog-client-app-parameters.json'
+              deploymentMode: 'Incremental'
 
          
