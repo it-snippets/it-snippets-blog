@@ -79,20 +79,20 @@ stages:
       runOnce:
         deploy:
           steps:
-          # - task: DownloadBuildArtifacts@0
-          #   displayName: 'Download artifact'
-          #   inputs:
-          #     buildType: 'current'
-          #     downloadType: 'single'
-          #     artifactName: '$(projectName)'
-          #     downloadPath: '$(System.ArtifactsDirectory)'
+          - task: DownloadBuildArtifacts@0
+            displayName: 'Download artifact'
+            inputs:
+              buildType: 'current'
+              downloadType: 'single'
+              artifactName: '$(projectName)'
+              downloadPath: '$(System.DefaultWorkingDirectory)'
           
-          # - task: ExtractFiles@1
-          #   inputs:
-          #     archiveFilePatterns: '$(System.ArtifactsDirectory)/*.zip'
-          #     destinationFolder: '$(System.ArtifactsDirectory)/extracted'
-          #     cleanDestinationFolder: true
-          #     overwriteExistingFiles: true
+          - task: ExtractFiles@1
+            inputs:
+              archiveFilePatterns: '$(System.DefaultWorkingDirectory)/*.zip'
+              destinationFolder: '$(System.DefaultWorkingDirectory)'
+              cleanDestinationFolder: true
+              overwriteExistingFiles: true
           - task: AzureResourceManagerTemplateDeployment@3
             inputs:
               deploymentScope: 'Resource Group'
