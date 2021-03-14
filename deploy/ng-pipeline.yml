@@ -3,42 +3,63 @@
 # Add steps that analyze code, save build artifacts, deploy, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
 
-trigger:
-- main
+variables:
+- name: ProjectName
+  value: blog-ng-client
+- name: ProjectFolder
+  value: 'source/${ProjectName}'
 
-pool:
-  vmImage: ubuntu-16.04
+stages:
+- stage: Build
+  displayName: Build stage
+  jobs:
+  - job: BuildJob
+    pool:
+      vmImage: 'ubuntu-20.04'
+    steps:
+    - task: NodeTool@0
+      inputs:
+        versionSpec: '10.x'
+      displayName: 'Install Node.js'
 
-steps:
-- task: NodeTool@0
-  inputs:
-    versionSpec: '10.x'
-  displayName: 'Install Node.js'
+    - script: |
+        npm install -g @angular/cli
+        npm install
+      displayName: 'Install packages'
+      workingDirectory: ${ProjectFolder}
 
-- script: |
-    npm install -g @angular/cli
-    npm install
-  displayName: 'Install packages'
-  workingDirectory: source/blog-ng-client
+    - script: |
+        ng lint
+      displayName: 'Run linter'
+      workingDirectory: ${ProjectFolder}
 
-- script: |
-    ng lint
-  displayName: 'Run linter'
-  workingDirectory: source/blog-ng-client
+    - script: |
+        npm run test-headless
+      displayName: 'Run tests'
+      workingDirectory: ${ProjectFolder}
 
-- script: |
-    npm run test-headless
-  displayName: 'Run tests'
-  workingDirectory: source/blog-ng-client
+    - task: PublishTestResults@2
+      condition: succeededOrFailed()
+      inputs:
+        testResultsFormat: 'JUnit'
+        testResultsFiles: '**/TESTS-*.xml'
+      displayName: 'Publish Test Results'
 
-- task: PublishTestResults@2
-  condition: succeededOrFailed()
-  inputs:
-    testResultsFormat: 'JUnit'
-    testResultsFiles: '**/TESTS-*.xml'
-  displayName: 'Publish Test Results'
+    - script: |
+        ng build --prod
+      displayName: 'Build for prod'
+      workingDirectory: ${ProjectFolder}
 
-- script: |
-    ng build --prod
-  displayName: 'Build for prod'
-  workingDirectory: source/blog-ng-client
+    - task: ArchiveFiles@2
+      inputs:
+        rootFolderOrFile: '${ProjectFolder}/dist/${ProjectName}'
+        includeRootFolder: true
+        archiveType: 'zip'
+        archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+        replaceExistingArchive: true
+
+    - task: PublishBuildArtifacts@1
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+        ArtifactName: '${ProjectName}'
+        publishLocation: 'Container'
