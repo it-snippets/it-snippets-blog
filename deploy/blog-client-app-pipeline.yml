@@ -82,8 +82,8 @@ stages:
           
           - task: ExtractFiles@1
             inputs:
-              archiveFilePatterns: '$(System.DefaultWorkingDirectory)/**/*.zip'
-              destinationFolder: '$(System.DefaultWorkingDirectory)'
+              archiveFilePatterns: '$(System.WorkFolder)/**/*.zip'
+              destinationFolder: '$(System.WorkFolder)'
               cleanDestinationFolder: false
               overwriteExistingFiles: true
           - task: AzureResourceManagerTemplateDeployment@3
@@ -95,8 +95,8 @@ stages:
               resourceGroupName: 'it-snippets-DEV'
               location: 'West Europe'
               templateLocation: 'Linked artifact'
-              csmFile: 'blog-client-app-template.json'
-              csmParametersFile: 'blog-client-app-parameters.json'
+              csmFile: '$(System.WorkFolder)/deploy/blog-client-app-template.json'
+              csmParametersFile: '$(System.WorkFolder)/deploy/blog-client-app-parameters.json'
               deploymentMode: 'Incremental'
 
          
