@@ -110,10 +110,16 @@ stages:
               csmFile: '$(System.WorkFolder)/$(angularProjectName)/blog-client-app-template.json'
               csmParametersFile: '$(System.WorkFolder)/$(angularProjectName)/blog-client-app-parameters.json'
               deploymentMode: 'Incremental'
-          - task: AzureRmWebAppDeployment@4
+          # - task: AzureRmWebAppDeployment@4
+          #   inputs:
+          #     ConnectionType: 'AzureRM'
+          #     azureSubscription: 'az-infinitum-connection'
+          #     appType: 'webAppLinux'
+          #     WebAppName: 'it-snippets'
+          #     packageForLinux: '$(System.WorkFolder)/$(projectName)/**/*.zip'
+          - task: AzureWebApp@1
             inputs:
-              ConnectionType: 'AzureRM'
               azureSubscription: 'az-infinitum-connection'
               appType: 'webAppLinux'
-              WebAppName: 'it-snippets'
-              packageForLinux: '$(System.WorkFolder)/$(projectName)/**/*.zip'
+              appName: 'it-snippets'
+              package: '$(System.WorkFolder)/$(projectName)/**/*.zip'
