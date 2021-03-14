@@ -26,32 +26,32 @@ stages:
         npm install -g @angular/cli
         npm install
       displayName: 'Install packages'
-      workingDirectory: ${ProjectFolder}
+      workingDirectory: '${ProjectFolder}''
 
     - script: |
         ng lint
       displayName: 'Run linter'
-      workingDirectory: ${ProjectFolder}
+      workingDirectory: '${ProjectFolder}''
 
     - script: |
         npm run test-headless
       displayName: 'Run tests'
-      workingDirectory: ${ProjectFolder}
+      workingDirectory: '${ProjectFolder}''
 
     - task: PublishTestResults@2
       condition: succeededOrFailed()
       inputs:
         testResultsFormat: 'JUnit'
         testResultsFiles: '**/TESTS-*.xml'
-      displayName: 'Publish Test Results'
+      displayName: 'Publish test results'
 
     - script: |
         ng build --prod
       displayName: 'Build for prod'
-      workingDirectory: ${ProjectFolder}
+      workingDirectory: '${ProjectFolder}''
 
     - task: ArchiveFiles@2
-      inputs:
+      inputs:        
         rootFolderOrFile: '${ProjectFolder}/dist/${ProjectName}'
         includeRootFolder: true
         archiveType: 'zip'
