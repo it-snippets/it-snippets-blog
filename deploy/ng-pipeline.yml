@@ -18,20 +18,27 @@ steps:
 - script: |
     npm install -g @angular/cli
     npm install
-  displayName: 'npm install'
+  displayName: 'Install packages'
   workingDirectory: source/blog-ng-client
 
 - script: |
     ng lint
-  displayName: 'ng lint'
+  displayName: 'Run linter'
   workingDirectory: source/blog-ng-client
 
 - script: |
     npm run test-headless
-  displayName: 'ng test'
+  displayName: 'Run tests'
   workingDirectory: source/blog-ng-client
+
+- task: PublishTestResults@2
+  condition: succeededOrFailed()
+  inputs:
+    testResultsFormat: 'JUnit'
+    testResultsFiles: '**/TESTS-*.xml'
+  displayName: 'Publish Test Results'
 
 - script: |
     ng build --prod
-  displayName: 'ng build'
+  displayName: 'Build for prod'
   workingDirectory: source/blog-ng-client
