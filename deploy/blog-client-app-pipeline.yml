@@ -51,6 +51,12 @@ stages:
         ng build --prod
       displayName: 'Build for prod'
       workingDirectory: '$(projectPath)'
+    
+    - task: CopyFiles@2
+      inputs:
+        SourceFolder: 'deploy'
+        Contents: '*.json'
+        TargetFolder: '$(projectPath)/dist/blog-ng-client'
 
     - task: ArchiveFiles@2
       inputs:        
@@ -95,8 +101,8 @@ stages:
               resourceGroupName: 'it-snippets-DEV'
               location: 'West Europe'
               templateLocation: 'Linked artifact'
-              csmFile: '$(System.WorkFolder)/deploy/blog-client-app-template.json'
-              csmParametersFile: '$(System.WorkFolder)/deploy/blog-client-app-parameters.json'
+              csmFile: 'blog-client-app-template.json'
+              csmParametersFile: 'blog-client-app-parameters.json'
               deploymentMode: 'Incremental'
 
          
