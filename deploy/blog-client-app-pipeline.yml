@@ -82,8 +82,8 @@ stages:
           
           - task: ExtractFiles@1
             inputs:
-              archiveFilePatterns: '$(System.ArtifactsDirectory)/$(projectName)/*.zip'
-              destinationFolder: '$(System.ArtifactsDirectory)'
+              archiveFilePatterns: '$(projectName)/*.zip'
+              destinationFolder: ''
               cleanDestinationFolder: true
               overwriteExistingFiles: true
           - task: AzureResourceManagerTemplateDeployment@3
