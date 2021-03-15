@@ -93,9 +93,10 @@ stages:
           #     CleanTargetFolder: true
           #     OverWrite: 
           - task: PowerShell@2
+            displayName: 'List dir'
             inputs:
               targetType: 'inline'
-              script: 'Get-ChildItem $(System.WorkFolder)'
+              script: 'Get-ChildItem $(System.DefaultWorkingDirectory)'
           - task: ExtractFiles@1
             inputs:
               archiveFilePatterns: '$(System.WorkFolder)/**/*.zip'
@@ -126,4 +127,4 @@ stages:
               azureSubscription: 'az-infinitum-connection'
               appType: 'webAppLinux'
               appName: 'it-snippets'
-              package: '$(System.WorkFolder)/*.zip'
+              package: '$(System.WorkFolder)/**/$(projectName)/*.zip'
