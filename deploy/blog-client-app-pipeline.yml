@@ -61,7 +61,7 @@ stages:
     - task: ArchiveFiles@2
       inputs:        
         rootFolderOrFile: '$(projectPath)/dist/blog-ng-client'
-        includeRootFolder: true
+        includeRootFolder: false
         archiveType: 'zip'
         archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
         replaceExistingArchive: true
