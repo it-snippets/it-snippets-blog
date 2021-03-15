@@ -117,3 +117,9 @@ stages:
               package: '$(System.WorkFolder)/**/$(projectName)/*.zip'
               runtimeStack: 'NODE|12-lts'
               startUpCommand: 'pm2 serve /home/site/wwwroot --no-daemon --spa'
+            
+          - task: AzureAppServiceManage@0
+            inputs:
+              azureSubscription: 'az-infinitum-connection'
+              Action: 'Start Azure App Service'
+              WebAppName: 'it-snippets'
