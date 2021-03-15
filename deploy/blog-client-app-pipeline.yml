@@ -85,11 +85,13 @@ stages:
       runOnce:
         deploy:
           steps:
-          - task: PowerShell@2
-            displayName: 'List dir'
+          - task: AzureAppServiceManage@0
+            displayName: 'Stop app'
+            continueOnError: true
             inputs:
-              targetType: 'inline'
-              script: 'Get-ChildItem $(System.DefaultWorkingDirectory)'
+              azureSubscription: 'az-infinitum-connection'
+              Action: 'Stop Azure App Service'
+              WebAppName: 'it-snippets'
           - task: ExtractFiles@1
             inputs:
               archiveFilePatterns: '$(System.WorkFolder)/**/*.zip'
@@ -119,7 +121,8 @@ stages:
               startUpCommand: 'pm2 serve /home/site/wwwroot --no-daemon --spa'
           
           - task: AzureAppServiceManage@0
+            displayName: 'Start app'
             inputs:
               azureSubscription: 'az-infinitum-connection'
-              Action: 'Restart Azure App Service'
+              Action: 'Start Azure App Service'
               WebAppName: 'it-snippets'
