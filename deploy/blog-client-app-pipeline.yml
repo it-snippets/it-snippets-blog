@@ -115,3 +115,5 @@ stages:
               appType: 'webAppLinux'
               appName: 'it-snippets'
               package: '$(System.WorkFolder)/**/$(projectName)/*.zip'
+              runtimeStack: 'NODE|12-lts'
+              startUpCommand: 'pm2 serve /home/site/wwwroot --no-daemon --spa'
