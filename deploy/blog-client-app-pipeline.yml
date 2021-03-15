@@ -122,4 +122,4 @@ stages:
               azureSubscription: 'az-infinitum-connection'
               appType: 'webAppLinux'
               appName: 'it-snippets'
-              package: '$(System.WorkFolder)/$(projectName)/**/*.zip'
+              package: '$(System.WorkFolder)/$(projectName)/*.zip'
