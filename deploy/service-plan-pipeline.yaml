@@ -24,4 +24,5 @@ steps:
     templateLocation: 'Linked artifact'
     csmFile: 'deploy/service-plan-template.json'
     csmParametersFile: 'deploy/service-plan-parameters.json'
+    overrideParameters: '-name $(servicePlanName) -location $(location)'
     deploymentMode: 'Incremental'
