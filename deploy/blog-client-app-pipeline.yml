@@ -9,6 +9,8 @@ variables:
 - group: ItSnippetsVariables
 - name: environment
   value: dev
+- name: linuxFxVersion
+  value: NODE|12-lts
 - name: angularProjectName
   value: blog-ng-client
 - name: projectName
@@ -114,6 +116,7 @@ stages:
               templateLocation: 'Linked artifact'
               csmFile: '$(System.WorkFolder)/blog-client-app-template.json'
               csmParametersFile: '$(System.WorkFolder)/blog-client-app-parameters.json'
+              overrideParameters: '-location "$(location)" -subscriptionId "$(subscriptionId)" -name "$(applicationName)$(environment)" -hostingPlanName "$(servicePlanName)" -serverFarmResourceGroup "$(serverPlanResourceGroup)" -linuxFxVersion "$(linuxFxVersion)"'
               deploymentMode: 'Incremental'
 
           - task: AzureWebApp@1
@@ -122,7 +125,7 @@ stages:
               appType: 'webAppLinux'
               appName: '$(applicationName)'
               package: '$(System.WorkFolder)/**/$(projectName)/*.zip'
-              runtimeStack: 'NODE|12-lts'
+              runtimeStack: '$(linuxFxVersion)'
               startUpCommand: 'pm2 serve /home/site/wwwroot --no-daemon --spa'
           
           - task: AzureAppServiceManage@0
