@@ -1,0 +1,24 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- main
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+- task: AzureResourceManagerTemplateDeployment@3
+  inputs:
+    deploymentScope: 'Resource Group'
+    azureResourceManagerConnection: 'az-infinitum-connection'
+    subscriptionId: '1bc29c05-0f12-4f80-84f1-9fd4f924c9cf'
+    action: 'Create Or Update Resource Group'
+    resourceGroupName: 'RGServicePlans'
+    location: 'West Europe'
+    templateLocation: 'Linked artifact'
+    csmFile: 'deploy/service-plan-template.json'
+    csmParametersFile: 'deploy/service-plan-parameter.json'
+    deploymentMode: 'Incremental'
