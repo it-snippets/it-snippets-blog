@@ -3,8 +3,8 @@
 # Add steps that build, run tests, deploy, and more:
 # https://aka.ms/yaml
 
-trigger:
-- main
+# trigger:
+# - main
 
 pool:
   vmImage: ubuntu-latest
@@ -12,17 +12,20 @@ pool:
 variables:
 - group: ItSnippetsVariables
 
-steps:
-- task: AzureResourceManagerTemplateDeployment@3
-  inputs:
-    deploymentScope: 'Resource Group'
-    azureResourceManagerConnection: '$(armServiceConnectionName)'
-    subscriptionId: '$(subscriptionId)'
-    action: 'Create Or Update Resource Group'
-    resourceGroupName: '$(serverPlanResourceGroup)'
-    location: '$(location)'
-    templateLocation: 'Linked artifact'
-    csmFile: 'deploy/service-plan-template.json'
-    csmParametersFile: 'deploy/service-plan-parameters.json'
-    overrideParameters: '-name "$(servicePlanName)" -location "$(location)"'
-    deploymentMode: 'Incremental'
+jobs:
+- job: Deploy
+  steps:
+  - task: AzureResourceManagerTemplateDeployment@3
+    displayName: Create service plan
+    inputs:
+      deploymentScope: 'Resource Group'
+      azureResourceManagerConnection: '$(armServiceConnectionName)'
+      subscriptionId: '$(subscriptionId)'
+      action: 'Create Or Update Resource Group'
+      resourceGroupName: '$(serverPlanResourceGroup)'
+      location: '$(location)'
+      templateLocation: 'Linked artifact'
+      csmFile: 'deploy/service-plan-template.json'
+      csmParametersFile: 'deploy/service-plan-parameters.json'
+      overrideParameters: '-name "$(servicePlanName)" -location "$(location)"'
+      deploymentMode: 'Incremental'
