@@ -9,15 +9,18 @@ trigger:
 pool:
   vmImage: ubuntu-latest
 
+variables:
+- group: ItSnippetsVariables
+
 steps:
 - task: AzureResourceManagerTemplateDeployment@3
   inputs:
     deploymentScope: 'Resource Group'
-    azureResourceManagerConnection: 'az-infinitum-connection'
-    subscriptionId: '1bc29c05-0f12-4f80-84f1-9fd4f924c9cf'
+    azureResourceManagerConnection: '$(armServiceConnectionName)'
+    subscriptionId: '$(subscriptionId)'
     action: 'Create Or Update Resource Group'
-    resourceGroupName: 'RGServicePlans'
-    location: 'West Europe'
+    resourceGroupName: '$(serverPlanResourceGroup)'
+    location: '$(location)'
     templateLocation: 'Linked artifact'
     csmFile: 'deploy/service-plan-template.json'
     csmParametersFile: 'deploy/service-plan-parameters.json'
