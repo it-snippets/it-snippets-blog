@@ -6,6 +6,11 @@ trigger:
 - main
 
 variables:
+- group: ItSnippetsVariables
+- name: environment
+  value: dev
+- name: linuxFxVersion
+  value: NODE|12-lts
 - name: angularProjectName
   value: blog-ng-client
 - name: projectName
@@ -82,7 +87,7 @@ stages:
   - deployment: DeploymentJob
     pool:
       vmImage: 'ubuntu-20.04'
-    environment: 'DEV'
+    environment: '$(environment)'
     strategy:
       runOnce:
         deploy:
@@ -91,9 +96,9 @@ stages:
             displayName: 'Stop app'
             continueOnError: true
             inputs:
-              azureSubscription: 'az-infinitum-connection'
+              azureSubscription: '$(armServiceConnectionName)'
               Action: 'Stop Azure App Service'
-              WebAppName: 'it-snippets'
+              WebAppName: '$(applicationName)$(environment)'
           - task: ExtractFiles@1
             inputs:
               archiveFilePatterns: '$(System.WorkFolder)/**/*.zip'
@@ -103,28 +108,29 @@ stages:
           - task: AzureResourceManagerTemplateDeployment@3
             inputs:
               deploymentScope: 'Resource Group'
-              azureResourceManagerConnection: 'az-infinitum-connection'
-              subscriptionId: '1bc29c05-0f12-4f80-84f1-9fd4f924c9cf'
+              azureResourceManagerConnection: '$(armServiceConnectionName)'
+              subscriptionId: '$(subscriptionId)'
               action: 'Create Or Update Resource Group'
-              resourceGroupName: 'it-snippets-DEV'
-              location: 'West Europe'
+              resourceGroupName: '$(applicationName)$(environment)'
+              location: '$(location)'
               templateLocation: 'Linked artifact'
               csmFile: '$(System.WorkFolder)/blog-client-app-template.json'
               csmParametersFile: '$(System.WorkFolder)/blog-client-app-parameters.json'
+              overrideParameters: '-location "$(location)" -subscriptionId "$(subscriptionId)" -name "$(applicationName)$(environment)" -hostingPlanName "$(servicePlanName)" -serverFarmResourceGroup "$(serverPlanResourceGroup)" -linuxFxVersion "$(linuxFxVersion)"'
               deploymentMode: 'Incremental'
 
           - task: AzureWebApp@1
             inputs:
-              azureSubscription: 'az-infinitum-connection'
+              azureSubscription: '$(armServiceConnectionName)'
               appType: 'webAppLinux'
-              appName: 'it-snippets'
+              appName: '$(applicationName)$(environment)'
               package: '$(System.WorkFolder)/**/$(projectName)/*.zip'
-              runtimeStack: 'NODE|12-lts'
+              runtimeStack: '$(linuxFxVersion)'
               startUpCommand: 'pm2 serve /home/site/wwwroot --no-daemon --spa'
           
           - task: AzureAppServiceManage@0
             displayName: 'Start app'
             inputs:
-              azureSubscription: 'az-infinitum-connection'
+              azureSubscription: '$(armServiceConnectionName)'
               Action: 'Start Azure App Service'
-              WebAppName: 'it-snippets'
+              WebAppName: '$(applicationName)$(environment)'
