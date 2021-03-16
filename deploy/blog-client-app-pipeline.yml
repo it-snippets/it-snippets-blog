@@ -109,7 +109,7 @@ stages:
             inputs:
               deploymentScope: 'Resource Group'
               azureResourceManagerConnection: '$(armServiceConnectionName)'
-              subscriptionId: '$(subscriptionId)$'
+              subscriptionId: '$(subscriptionId)'
               action: 'Create Or Update Resource Group'
               resourceGroupName: '$(applicationName)$(environment)'
               location: '$(location)'
