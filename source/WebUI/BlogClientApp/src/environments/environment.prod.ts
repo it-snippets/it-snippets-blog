@@ -1,4 +1,6 @@
+import * as configuration from './configuration.json';
+
 export const environment = {
   production: true,
-  apiUrl: 'some-fake-url-prod',
+  apiUrl: configuration.default.apiUrl,
 };
