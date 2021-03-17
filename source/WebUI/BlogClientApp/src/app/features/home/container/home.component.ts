@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
 import { BlogEntry } from 'src/app/shared/models/blog-entry.model';
+import { environment } from 'src/environments/environment';
 import { HomeHttpService } from '../services/home-http.service';
 
 @Component({
@@ -13,7 +14,9 @@ export class HomeComponent implements OnInit {
 
   entries$: Observable<BlogEntry[]> | undefined;
 
-  constructor(private homeHttpService: HomeHttpService) { }
+  constructor(private homeHttpService: HomeHttpService) {
+    console.log('url: ', environment.apiUrl);
+  }
 
   ngOnInit() {
     this.entries$ = this.homeHttpService.getBlogEnties().pipe(
