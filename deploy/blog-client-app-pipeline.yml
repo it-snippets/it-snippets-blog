@@ -99,6 +99,20 @@ stages:
               azureSubscription: '$(armServiceConnectionName)'
               Action: 'Stop Azure App Service'
               WebAppName: '$(applicationName)$(environment)'
+          - task: replacetokens@3
+            inputs:
+              targetFiles: '$(System.WorkFolder)/dist/**/main*.js'
+              encoding: 'auto'
+              writeBOM: true
+              verbosity: 'detailed'
+              actionOnMissing: 'warn'
+              keepToken: false
+              tokenPrefix: '#{'
+              tokenSuffix: '}#'
+              useLegacyPattern: false
+              enableTransforms: false
+              enableTelemetry: false
+
           - task: ExtractFiles@1
             inputs:
               archiveFilePatterns: '$(System.WorkFolder)/**/*.zip'
