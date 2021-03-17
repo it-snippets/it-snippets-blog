@@ -99,9 +99,17 @@ stages:
               azureSubscription: '$(armServiceConnectionName)'
               Action: 'Stop Azure App Service'
               WebAppName: '$(applicationName)$(environment)'
+
+          - task: ExtractFiles@1
+            inputs:
+              archiveFilePatterns: '$(System.WorkFolder)/**/*.zip'
+              destinationFolder: '$(System.WorkFolder)/$(projectName)'
+              cleanDestinationFolder: false
+              overwriteExistingFiles: true
+
           - task: replacetokens@3
             inputs:
-              targetFiles: '$(System.WorkFolder)/dist/**/main*.js'
+              targetFiles: '$(System.WorkFolder)/$(projectName)/dist/**/main*.js'
               encoding: 'auto'
               writeBOM: true
               verbosity: 'detailed'
@@ -112,13 +120,7 @@ stages:
               useLegacyPattern: false
               enableTransforms: false
               enableTelemetry: false
-
-          - task: ExtractFiles@1
-            inputs:
-              archiveFilePatterns: '$(System.WorkFolder)/**/*.zip'
-              destinationFolder: '$(System.WorkFolder)'
-              cleanDestinationFolder: false
-              overwriteExistingFiles: true
+          
           - task: AzureResourceManagerTemplateDeployment@3
             inputs:
               deploymentScope: 'Resource Group'
@@ -128,17 +130,33 @@ stages:
               resourceGroupName: '$(applicationName)$(environment)'
               location: '$(location)'
               templateLocation: 'Linked artifact'
-              csmFile: '$(System.WorkFolder)/blog-client-app-template.json'
-              csmParametersFile: '$(System.WorkFolder)/blog-client-app-parameters.json'
+              csmFile: '$(System.WorkFolder)/$(projectName)/blog-client-app-template.json'
+              csmParametersFile: '$(System.WorkFolder)/$(projectName)/blog-client-app-parameters.json'
               overrideParameters: '-location "$(location)" -subscriptionId "$(subscriptionId)" -name "$(applicationName)$(environment)" -hostingPlanName "$(servicePlanName)" -serverFarmResourceGroup "$(serverPlanResourceGroup)" -linuxFxVersion "$(linuxFxVersion)"'
               deploymentMode: 'Incremental'
+
+          - task: DeleteFiles@1
+            inputs:
+              SourceFolder: 
+              Contents: |
+                *parameters.json
+                *emplate.json
+          
+          - task: ArchiveFiles@2
+            inputs:
+              rootFolderOrFile: '$(System.WorkFolder)/$(projectName)'
+              includeRootFolder: false
+              archiveType: 'zip'
+              archiveFile: '$(System.WorkFolder)/$(Build.BuildId).zip'
+              replaceExistingArchive: true
+              verbose: true
 
           - task: AzureWebApp@1
             inputs:
               azureSubscription: '$(armServiceConnectionName)'
               appType: 'webAppLinux'
               appName: '$(applicationName)$(environment)'
-              package: '$(System.WorkFolder)/**/$(projectName)/*.zip'
+              package: '$(System.WorkFolder)/$(Build.BuildId).zip'
               runtimeStack: '$(linuxFxVersion)'
               startUpCommand: 'pm2 serve /home/site/wwwroot --no-daemon --spa'
           
