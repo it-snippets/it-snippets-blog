@@ -2,26 +2,26 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "subscriptionId": {
-            "value": "1bc29c05-0f12-4f80-84f1-9fd4f924c9cf"
-        },
         "name": {
-            "value": "it-snippets"
+            "value": "SPLinuxFreeF1WE"
         },
         "location": {
             "value": "West Europe"
         },
-        "hostingPlanName": {
-            "value": "spLinuxFreeF1We"
+        "numberOfWorkers": {
+            "value": "1"
         },
-        "serverFarmResourceGroup": {
-            "value": "rgServicePlans"
+        "sku": {
+            "value": "Free"
         },
-        "alwaysOn": {
-            "value": false
+        "skuCode": {
+            "value": "F1"
         },
-        "linuxFxVersion": {
-            "value": "NODE|12-lts"
+        "workerSize": {
+            "value": "0"
+        },
+        "workerSizeId": {
+            "value": "0"
         }
     }
 }
