@@ -9,20 +9,20 @@ variables:
 steps:
   - template: PipelineTemplates/service-plan-template.yaml
     parameters:
-      armServiceConnectionName: '$(armServiceConnectionName)'
-      subscriptionId: '$(subscriptionId)'
-      serverPlanResourceGroup: '$(serverPlanResourceGroup)'
-      location: '$(location)'
+      armServiceConnectionName: $(armServiceConnectionName)
+      subscriptionId: $(subscriptionId)
+      serverPlanResourceGroup: $(serverPlanResourceGroup)
+      location: $(location)
       csmFile: 'deploy/linux-service-plan-template.json'
       csmParametersFile: 'deploy/linux-service-plan-parameters.json'
-      servicePlanName: '$(servicePlanLinuxName)'
+      servicePlanName: $(servicePlanLinuxName)
 
   - template: PipelineTemplates/service-plan-template.yaml
     parameters:
-      armServiceConnectionName: '$(armServiceConnectionName)'
-      subscriptionId: '$(subscriptionId)'
-      serverPlanResourceGroup: '$(serverPlanResourceGroup)'
-      location: '$(location)'
+      armServiceConnectionName: $(armServiceConnectionName)
+      subscriptionId: $(subscriptionId)
+      serverPlanResourceGroup: $(serverPlanResourceGroup)
+      location: $(location)
       csmFile: 'deploy/windows-service-plan-template.json'
       csmParametersFile: 'deploy/windows-service-plan-parameters.json'
-      servicePlanName: '$(servicePlanWindowsName)'
+      servicePlanName: $(servicePlanWindowsName)

@@ -9,14 +9,14 @@ parameters:
 
 steps:
   - task: AzureResourceManagerTemplateDeployment@3
-    displayName: 'Create service plan $(servicePlanName)'
+    displayName: Create service plan $(servicePlanName)
     inputs:
       deploymentScope: 'Resource Group'
-      azureResourceManagerConnection: '$(armServiceConnectionName)'
-      subscriptionId: '$(subscriptionId)'
+      azureResourceManagerConnection: $(armServiceConnectionName)
+      subscriptionId: $(subscriptionId)
       action: 'Create Or Update Resource Group'
       resourceGroupName: '$(serverPlanResourceGroup)'
-      location: '$(location)'
+      location: $(location)
       templateLocation: 'Linked artifact'
       csmFile: $(csmFile)
       csmParametersFile: $(csmParametersFile)
