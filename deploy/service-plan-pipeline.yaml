@@ -7,22 +7,30 @@ variables:
   - group: ItSnippetsVariables
 
 steps:
-  - template: PipelineTemplates/service-plan-template.yaml
-    parameters:
-      armServiceConnectionName: $(armServiceConnectionName)
-      subscriptionId: $(subscriptionId)
-      serverPlanResourceGroup: $(serverPlanResourceGroup)
-      location: $(location)
-      csmFile: 'linux-service-plan-template.json'
-      csmParametersFile: 'linux-service-plan-parameters.json'
-      servicePlanName: $(servicePlanLinuxName)
+  - task: CmdLine@2
+    inputs:
+      script: 'echo $(servicePlanLinuxName)'
 
-  - template: PipelineTemplates/service-plan-template.yaml
+  - template: 'PipelineTemplates/service-plan-template.yaml'
     parameters:
       armServiceConnectionName: $(armServiceConnectionName)
       subscriptionId: $(subscriptionId)
       serverPlanResourceGroup: $(serverPlanResourceGroup)
       location: $(location)
-      csmFile: 'windows-service-plan-template.json'
-      csmParametersFile: 'windows-service-plan-parameters.json'
+      csmFile: '/deploy/linux-service-plan-template.json'
+      csmParametersFile: '/deploy/linux-service-plan-parameters.json'
+      servicePlanName: $(servicePlanLinuxName)
+  
+  - task: CmdLine@2
+    inputs:
+      script: 'echo $(servicePlanWindowsName)'
+
+  - template: 'PipelineTemplates/service-plan-template.yaml'
+    parameters:
+      armServiceConnectionName: $(armServiceConnectionName)
+      subscriptionId: $(subscriptionId)
+      serverPlanResourceGroup: $(serverPlanResourceGroup)
+      location: $(location)
+      csmFile: '/deploy/windows-service-plan-template.json'
+      csmParametersFile: '/deploy/windows-service-plan-parameters.json'
       servicePlanName: $(servicePlanWindowsName)
