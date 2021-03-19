@@ -6,7 +6,7 @@ pool:
 variables:
   - group: ItSnippetsVariables
 
-jobs:
+steps:
   - template: PipelineTemplates/service-plan-template.yaml
     parameters:
       armServiceConnectionName: '$(armServiceConnectionName)'
