@@ -7,7 +7,7 @@ variables:
   - group: ItSnippetsVariables
 
 steps:
-  - template: PipelineTemplates/service-plan-template.yaml
+  - template: deploy/PipelineTemplates/service-plan-template.yaml
     parameters:
       armServiceConnectionName: $(armServiceConnectionName)
       subscriptionId: $(subscriptionId)
@@ -17,7 +17,7 @@ steps:
       csmParametersFile: 'deploy/linux-service-plan-parameters.json'
       servicePlanName: $(servicePlanLinuxName)
 
-  - template: PipelineTemplates/service-plan-template.yaml
+  - template: deploy/PipelineTemplates/service-plan-template.yaml
     parameters:
       armServiceConnectionName: $(armServiceConnectionName)
       subscriptionId: $(subscriptionId)
