@@ -22,20 +22,20 @@ parameters:
     default: EMPTY
 
 steps:
-  - task: CmdLine@2
-    inputs:
-      script: 'echo $(servicePlanName)'
+  - script: echo ${{ parameters.servicePlanName }}
+  - script: echo ${{ parameters.csmFile }}
+
   - task: AzureResourceManagerTemplateDeployment@3
-    displayName: 'Create service plan $(servicePlanName)'
+    displayName: 'Create service plan ${{ parameters.servicePlanName }}'
     inputs:
       deploymentScope: 'Resource Group'
-      azureResourceManagerConnection: $(armServiceConnectionName)
-      subscriptionId: $(subscriptionId)
+      azureResourceManagerConnection: ${{ parameters.armServiceConnectionName }}
+      subscriptionId: ${{ parameters.subscriptionId }}
       action: 'Create Or Update Resource Group'
-      resourceGroupName: '$(serverPlanResourceGroup)'
-      location: $(location)
+      resourceGroupName: '${{ parameters.serverPlanResourceGroup }}'
+      location: ${{ parameters.location }}
       templateLocation: 'Linked artifact'
-      csmFile: $(csmFile)
-      csmParametersFile: $(csmParametersFile)
-      overrideParameters: '-name "$(servicePlanName)" -location "$(location)"'
+      csmFile: ${{ parameters.csmFile }}
+      csmParametersFile: ${{ parameters.csmParametersFile }}
+      overrideParameters: '-name "${{ parameters.servicePlanName }}" -location "${{ parameters.location }}"'
       deploymentMode: 'Incremental'
