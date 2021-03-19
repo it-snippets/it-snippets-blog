@@ -109,7 +109,7 @@ stages:
 
           - task: replacetokens@3
             inputs:
-              targetFiles: '$(System.WorkFolder)/$(projectName)/dist/**/main*.js'
+              targetFiles: '$(System.WorkFolder)/$(projectName)/main*.js'
               encoding: 'auto'
               writeBOM: true
               verbosity: 'detailed'
