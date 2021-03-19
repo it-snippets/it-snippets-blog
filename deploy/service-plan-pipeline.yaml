@@ -17,8 +17,8 @@ steps:
       subscriptionId: $(subscriptionId)
       serverPlanResourceGroup: $(serverPlanResourceGroup)
       location: $(location)
-      csmFile: 'linux-service-plan-template.json'
-      csmParametersFile: 'linux-service-plan-parameters.json'
+      csmFile: '**/linux-service-plan-template.json'
+      csmParametersFile: '**/linux-service-plan-parameters.json'
       servicePlanName: $(servicePlanLinuxName)
   
   - task: CmdLine@2
@@ -31,6 +31,6 @@ steps:
       subscriptionId: $(subscriptionId)
       serverPlanResourceGroup: $(serverPlanResourceGroup)
       location: $(location)
-      csmFile: 'windows-service-plan-template.json'
-      csmParametersFile: 'windows-service-plan-parameters.json'
+      csmFile: '**/windows-service-plan-template.json'
+      csmParametersFile: '**/windows-service-plan-parameters.json'
       servicePlanName: $(servicePlanWindowsName)
