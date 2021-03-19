@@ -8,7 +8,7 @@ parameters:
   servicePlanName: ''
 
 jobs:
-  - job: Deploy
+  - job: 'Deploy-$(servicePlanName)'
     steps:
       - task: AzureResourceManagerTemplateDeployment@3
         displayName: 'Create service plan $(servicePlanName)'
