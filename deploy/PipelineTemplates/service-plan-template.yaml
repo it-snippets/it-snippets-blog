@@ -1,15 +1,32 @@
 parameters:
-  armServiceConnectionName: ''
-  subscriptionId: ''
-  serverPlanResourceGroup: ''
-  location: ''
-  csmFile: ''
-  csmParametersFile: ''
-  servicePlanName: ''
+  - name: armServiceConnectionName
+    type: string
+    default: EMPTY
+  - name: subscriptionId
+    type: string
+    default: EMPTY
+  - name: serverPlanResourceGroup
+    type: string
+    default: EMPTY
+  - name: location
+    type: string
+    default: EMPTY
+  - name: csmFile
+    type: string
+    default: EMPTY
+  - name: csmParametersFile
+    type: string
+    default: EMPTY
+  - name: servicePlanName
+    type: string
+    default: EMPTY
 
 steps:
+  - task: CmdLine@2
+    inputs:
+      script: 'echo $(servicePlanName)'
   - task: AzureResourceManagerTemplateDeployment@3
-    displayName: Create service plan $(servicePlanName)
+    displayName: 'Create service plan $(servicePlanName)'
     inputs:
       deploymentScope: 'Resource Group'
       azureResourceManagerConnection: $(armServiceConnectionName)
