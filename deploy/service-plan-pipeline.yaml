@@ -25,4 +25,4 @@ jobs:
       location: '$(location)'
       csmFile: 'deploy/windows-service-plan-template.json'
       csmParametersFile: 'deploy/windows-service-plan-parameters.json'
-      servicePlanName: '$(servicePlanWindosName)'
+      servicePlanName: '$(servicePlanWindowsName)'
