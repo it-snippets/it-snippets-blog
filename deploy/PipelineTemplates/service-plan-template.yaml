@@ -1,0 +1,38 @@
+parameters:
+  - name: armServiceConnectionName
+    type: string
+    default: EMPTY
+  - name: subscriptionId
+    type: string
+    default: EMPTY
+  - name: serverPlanResourceGroup
+    type: string
+    default: EMPTY
+  - name: location
+    type: string
+    default: EMPTY
+  - name: csmFile
+    type: string
+    default: EMPTY
+  - name: csmParametersFile
+    type: string
+    default: EMPTY
+  - name: servicePlanName
+    type: string
+    default: EMPTY
+
+steps:
+  - task: AzureResourceManagerTemplateDeployment@3
+    displayName: 'Create service plan ${{ parameters.servicePlanName }}'
+    inputs:
+      deploymentScope: 'Resource Group'
+      azureResourceManagerConnection: ${{ parameters.armServiceConnectionName }}
+      subscriptionId: ${{ parameters.subscriptionId }}
+      action: 'Create Or Update Resource Group'
+      resourceGroupName: '${{ parameters.serverPlanResourceGroup }}'
+      location: ${{ parameters.location }}
+      templateLocation: 'Linked artifact'
+      csmFile: ${{ parameters.csmFile }}
+      csmParametersFile: ${{ parameters.csmParametersFile }}
+      overrideParameters: '-name "${{ parameters.servicePlanName }}" -location "${{ parameters.location }}"'
+      deploymentMode: 'Incremental'

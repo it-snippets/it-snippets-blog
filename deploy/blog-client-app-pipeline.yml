@@ -1,176 +1,176 @@
 trigger:
-- main
+  - main
 
 variables:
-- group: ItSnippetsVariables
+  - group: ItSnippetsVariables
 
-- name: environment
-  value: dev
-- name: linuxFxVersion
-  value: NODE|12-lts
-- name: projectName
-  value: BlogClientApp
-- name: projectPath
-  value: 'source/WebUI/$(projectName)'
-- name: apiUrl
-  value: 'https://fake-url/api'
-- name: appInsights.instrumentationKey
-  value: '{GUID-GUID-GUID-GUID}'
+  - name: environment
+    value: dev
+  - name: linuxFxVersion
+    value: NODE|12-lts
+  - name: projectName
+    value: BlogClientApp
+  - name: projectPath
+    value: 'source/WebUI/$(projectName)'
+  - name: apiUrl
+    value: 'https://fake-url/api'
+  - name: appInsights.instrumentationKey
+    value: '{GUID-GUID-GUID-GUID}'
 
 stages:
-- stage: Build
-  displayName: Build stage
-  jobs:
-  - job: Build
-    pool:
-      vmImage: 'ubuntu-20.04'
-    steps:
-    - task: NodeTool@0
-      inputs:
-        versionSpec: '10.x'
-      displayName: 'Install Node.js'
-
-    - script: |
-        npm install -g @angular/cli
-        npm install
-      displayName: 'Install packages'
-      workingDirectory: '$(projectPath)'
-
-    - script: |
-        ng lint
-      displayName: 'Run linter'
-      workingDirectory: '$(projectPath)'
-
-    - script: |
-        npm run test-headless
-      displayName: 'Run tests'
-      workingDirectory: '$(projectPath)'
-
-    - task: PublishTestResults@2
-      displayName: 'Publish test results'
-      condition: succeededOrFailed()
-      inputs:
-        testResultsFormat: 'JUnit'
-        testResultsFiles: '**/TESTS-*.xml'
-
-    - script: |
-        ng build --prod --output-path 'dist/$(projectName)'
-      displayName: 'Build for prod'
-      workingDirectory: '$(projectPath)'
-    
-    - task: CopyFiles@2
-      displayName: 'Copy JSON files'
-      inputs:
-        SourceFolder: 'deploy'
-        Contents: '*.json'
-        TargetFolder: '$(projectPath)/dist/$(projectName)'
-
-    - task: ArchiveFiles@2
-      displayName: 'ZIP dist/$(projectName)'
-      inputs:
-        rootFolderOrFile: '$(projectPath)/dist/$(projectName)'
-        includeRootFolder: false
-        archiveType: 'zip'
-        archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
-        replaceExistingArchive: true
-
-    - task: PublishBuildArtifacts@1
-      displayName: 'Publish artifacts'
-      inputs:
-        PathtoPublish: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
-        ArtifactName: '$(projectName)'
-        publishLocation: 'Container'
-
-- stage: Deploy
-  displayName: 'Deploy'
-  dependsOn: Build
-  condition: succeeded()
-  jobs:
-  - deployment: DeploymentJob
-    pool:
-      vmImage: 'ubuntu-20.04'
-    environment: '$(environment)'
-    strategy:
-      runOnce:
-        deploy:
-          steps:
-          - task: AzureAppServiceManage@0
-            displayName: 'Stop app'
-            continueOnError: true
+  - stage: Build
+    displayName: Build stage
+    jobs:
+      - job: Build
+        pool:
+          vmImage: 'ubuntu-20.04'
+        steps:
+          - task: NodeTool@0
             inputs:
-              azureSubscription: '$(armServiceConnectionName)'
-              Action: 'Stop Azure App Service'
-              WebAppName: '$(applicationName)$(environment)'
+              versionSpec: '10.x'
+            displayName: 'Install Node.js'
 
-          - task: ExtractFiles@1
-            displayName: 'Extract artifact'
-            inputs:
-              archiveFilePatterns: '$(System.WorkFolder)/**/*.zip'
-              destinationFolder: '$(System.WorkFolder)/$(projectName)'
-              cleanDestinationFolder: false
-              overwriteExistingFiles: true
+          - script: |
+              npm install -g @angular/cli
+              npm install
+            displayName: 'Install packages'
+            workingDirectory: '$(projectPath)'
 
-          - task: replacetokens@3
-            displayName: 'Replace tokens with variable values'
-            inputs:
-              targetFiles: '$(System.WorkFolder)/$(projectName)/main*.js'
-              encoding: 'auto'
-              writeBOM: true
-              verbosity: 'detailed'
-              actionOnMissing: 'warn'
-              keepToken: false
-              tokenPrefix: '#{'
-              tokenSuffix: '}#'
-              useLegacyPattern: false
-              enableTransforms: false
-              enableTelemetry: false
-          
-          - task: AzureResourceManagerTemplateDeployment@3
-            displayName: 'ARM template deployment'
-            inputs:
-              deploymentScope: 'Resource Group'
-              azureResourceManagerConnection: '$(armServiceConnectionName)'
-              subscriptionId: '$(subscriptionId)'
-              action: 'Create Or Update Resource Group'
-              resourceGroupName: '$(applicationName)$(environment)'
-              location: '$(location)'
-              templateLocation: 'Linked artifact'
-              csmFile: '$(System.WorkFolder)/$(projectName)/blog-client-app-template.json'
-              csmParametersFile: '$(System.WorkFolder)/$(projectName)/blog-client-app-parameters.json'
-              overrideParameters: '-location "$(location)" -subscriptionId "$(subscriptionId)" -name "$(applicationName)$(environment)" -hostingPlanName "$(servicePlanName)" -serverFarmResourceGroup "$(serverPlanResourceGroup)" -linuxFxVersion "$(linuxFxVersion)"'
-              deploymentMode: 'Incremental'
+          - script: |
+              ng lint
+            displayName: 'Run linter'
+            workingDirectory: '$(projectPath)'
 
-          - task: DeleteFiles@1
-            displayName: 'Delete ARM .json files'
+          - script: |
+              npm run test-headless
+            displayName: 'Run tests'
+            workingDirectory: '$(projectPath)'
+
+          - task: PublishTestResults@2
+            displayName: 'Publish test results'
+            condition: succeededOrFailed()
             inputs:
-              SourceFolder: 
-              Contents: |
-                *parameters.json
-                *template.json
-          
+              testResultsFormat: 'JUnit'
+              testResultsFiles: '**/TESTS-*.xml'
+
+          - script: |
+              ng build --prod --output-path 'dist/$(projectName)'
+            displayName: 'Build for prod'
+            workingDirectory: '$(projectPath)'
+
+          - task: CopyFiles@2
+            displayName: 'Copy JSON files'
+            inputs:
+              SourceFolder: 'deploy'
+              Contents: '*.json'
+              TargetFolder: '$(projectPath)/dist/$(projectName)'
+
           - task: ArchiveFiles@2
-            displayName: 'ZIP files to deploy'
+            displayName: 'ZIP dist/$(projectName)'
             inputs:
-              rootFolderOrFile: '$(System.WorkFolder)/$(projectName)'
+              rootFolderOrFile: '$(projectPath)/dist/$(projectName)'
               includeRootFolder: false
               archiveType: 'zip'
-              archiveFile: '$(System.WorkFolder)/$(Build.BuildId).zip'
+              archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
               replaceExistingArchive: true
-              verbose: true
 
-          - task: AzureWebApp@1
-            displayName: 'Deploy app to Azure'
+          - task: PublishBuildArtifacts@1
+            displayName: 'Publish artifacts'
             inputs:
-              azureSubscription: '$(armServiceConnectionName)'
-              appType: 'webAppLinux'
-              appName: '$(applicationName)$(environment)'
-              package: '$(System.WorkFolder)/$(Build.BuildId).zip'
-              runtimeStack: '$(linuxFxVersion)'
-              startUpCommand: 'pm2 serve /home/site/wwwroot --no-daemon --spa'
-          
-          - task: AzureAppServiceManage@0
-            displayName: 'Start app'
-            inputs:
-              azureSubscription: '$(armServiceConnectionName)'
-              Action: 'Start Azure App Service'
-              WebAppName: '$(applicationName)$(environment)'
+              PathtoPublish: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
+              ArtifactName: '$(projectName)'
+              publishLocation: 'Container'
+
+  - stage: Deploy
+    displayName: 'Deploy'
+    dependsOn: Build
+    condition: succeeded()
+    jobs:
+      - deployment: DeploymentJob
+        pool:
+          vmImage: 'ubuntu-20.04'
+        environment: '$(environment)'
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - task: AzureAppServiceManage@0
+                  displayName: 'Stop app'
+                  continueOnError: true
+                  inputs:
+                    azureSubscription: '$(armServiceConnectionName)'
+                    Action: 'Stop Azure App Service'
+                    WebAppName: '$(applicationName)$(environment)'
+
+                - task: ExtractFiles@1
+                  displayName: 'Extract artifact'
+                  inputs:
+                    archiveFilePatterns: '$(System.WorkFolder)/**/*.zip'
+                    destinationFolder: '$(System.WorkFolder)/$(projectName)'
+                    cleanDestinationFolder: false
+                    overwriteExistingFiles: true
+
+                - task: replacetokens@3
+                  displayName: 'Replace tokens with variable values'
+                  inputs:
+                    targetFiles: '$(System.WorkFolder)/$(projectName)/main*.js'
+                    encoding: 'auto'
+                    writeBOM: true
+                    verbosity: 'detailed'
+                    actionOnMissing: 'warn'
+                    keepToken: false
+                    tokenPrefix: '#{'
+                    tokenSuffix: '}#'
+                    useLegacyPattern: false
+                    enableTransforms: false
+                    enableTelemetry: false
+
+                - task: AzureResourceManagerTemplateDeployment@3
+                  displayName: 'ARM template deployment'
+                  inputs:
+                    deploymentScope: 'Resource Group'
+                    azureResourceManagerConnection: '$(armServiceConnectionName)'
+                    subscriptionId: '$(subscriptionId)'
+                    action: 'Create Or Update Resource Group'
+                    resourceGroupName: '$(applicationName)$(environment)'
+                    location: '$(location)'
+                    templateLocation: 'Linked artifact'
+                    csmFile: '$(System.WorkFolder)/$(projectName)/blog-client-app-template.json'
+                    csmParametersFile: '$(System.WorkFolder)/$(projectName)/blog-client-app-parameters.json'
+                    overrideParameters: '-location "$(location)" -subscriptionId "$(subscriptionId)" -name "$(applicationName)$(environment)" -hostingPlanName "$(servicePlanLinuxName)" -serverFarmResourceGroup "$(serverPlanResourceGroup)" -linuxFxVersion "$(linuxFxVersion)"'
+                    deploymentMode: 'Incremental'
+
+                - task: DeleteFiles@1
+                  displayName: 'Delete ARM .json files'
+                  inputs:
+                    SourceFolder:
+                    Contents: |
+                      *parameters.json
+                      *template.json
+
+                - task: ArchiveFiles@2
+                  displayName: 'ZIP files to deploy'
+                  inputs:
+                    rootFolderOrFile: '$(System.WorkFolder)/$(projectName)'
+                    includeRootFolder: false
+                    archiveType: 'zip'
+                    archiveFile: '$(System.WorkFolder)/$(Build.BuildId).zip'
+                    replaceExistingArchive: true
+                    verbose: true
+
+                - task: AzureWebApp@1
+                  displayName: 'Deploy app to Azure'
+                  inputs:
+                    azureSubscription: '$(armServiceConnectionName)'
+                    appType: 'webAppLinux'
+                    appName: '$(applicationName)$(environment)'
+                    package: '$(System.WorkFolder)/$(Build.BuildId).zip'
+                    runtimeStack: '$(linuxFxVersion)'
+                    startUpCommand: 'pm2 serve /home/site/wwwroot --no-daemon --spa'
+
+                - task: AzureAppServiceManage@0
+                  displayName: 'Start app'
+                  inputs:
+                    azureSubscription: '$(armServiceConnectionName)'
+                    Action: 'Start Azure App Service'
+                    WebAppName: '$(applicationName)$(environment)'
