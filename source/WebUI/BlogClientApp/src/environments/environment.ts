@@ -4,6 +4,9 @@
 export const environment = {
   production: false,
   apiUrl: 'https://some-address:5000',
+  appInsights: {
+    instrumentationKey: '<guid>',
+  },
 };
 
 /*
