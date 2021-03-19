@@ -22,9 +22,6 @@ parameters:
     default: EMPTY
 
 steps:
-  - script: echo ${{ parameters.servicePlanName }}
-  - script: echo ${{ parameters.csmFile }}
-
   - task: AzureResourceManagerTemplateDeployment@3
     displayName: 'Create service plan ${{ parameters.servicePlanName }}'
     inputs:

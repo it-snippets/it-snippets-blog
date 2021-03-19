@@ -7,10 +7,6 @@ variables:
   - group: ItSnippetsVariables
 
 steps:
-  - task: CmdLine@2
-    inputs:
-      script: 'echo $(servicePlanLinuxName)'
-
   - template: 'PipelineTemplates/service-plan-template.yaml'
     parameters:
       armServiceConnectionName: $(armServiceConnectionName)
@@ -20,10 +16,6 @@ steps:
       csmFile: '**/linux-service-plan-template.json'
       csmParametersFile: '**/linux-service-plan-parameters.json'
       servicePlanName: $(servicePlanLinuxName)
-  
-  - task: CmdLine@2
-    inputs:
-      script: 'echo $(servicePlanWindowsName)'
 
   - template: 'PipelineTemplates/service-plan-template.yaml'
     parameters:
