@@ -1,0 +1,26 @@
+parameters:
+  armServiceConnectionName: ''
+  subscriptionId: ''
+  serverPlanResourceGroup: ''
+  location: ''
+  csmFile: ''
+  csmParametersFile: ''
+  servicePlanName: ''
+
+jobs:
+  - job: Deploy
+    steps:
+      - task: AzureResourceManagerTemplateDeployment@3
+        displayName: 'Create service plan $(servicePlanName)'
+        inputs:
+          deploymentScope: 'Resource Group'
+          azureResourceManagerConnection: '$(armServiceConnectionName)'
+          subscriptionId: '$(subscriptionId)'
+          action: 'Create Or Update Resource Group'
+          resourceGroupName: '$(serverPlanResourceGroup)'
+          location: '$(location)'
+          templateLocation: 'Linked artifact'
+          csmFile: $(csmFile)
+          csmParametersFile: $(csmParametersFile)
+          overrideParameters: '-name "$(servicePlanName)" -location "$(location)"'
+          deploymentMode: 'Incremental'
