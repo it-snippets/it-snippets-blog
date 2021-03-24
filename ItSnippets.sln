@@ -1,0 +1,23 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31105.61
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "source", "source", "{4E077483-DB82-4661-B148-7ED0DD302D7F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WebUI", "WebUI", "{52C9BE14-0003-4875-B779-C3A71F6684A2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AzureFunctions", "AzureFunctions", "{5BC7FBEA-8E89-4331-988E-FB94475F5CA4}"
+EndProject
+Global
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{52C9BE14-0003-4875-B779-C3A71F6684A2} = {4E077483-DB82-4661-B148-7ED0DD302D7F}
+		{5BC7FBEA-8E89-4331-988E-FB94475F5CA4} = {52C9BE14-0003-4875-B779-C3A71F6684A2}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {60F586AF-A36D-45BA-B7FA-03FBA1D2C47A}
+	EndGlobalSection
+EndGlobal
