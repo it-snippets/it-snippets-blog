@@ -32,7 +32,7 @@ stages:
 
           - script: |
               npm install -g @angular/cli
-              npm install
+              npm ci
             displayName: 'Install packages'
             workingDirectory: '$(projectPath)'
 
